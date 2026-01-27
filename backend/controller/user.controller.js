@@ -2,37 +2,73 @@ const jwt = require('jsonwebtoken')
 const cookieparser = require('cookieparser')
 const bcrypt = require('bcryptjs')
 const userModel = require('../model/user.model')
+const generateToken = require('../utils/token.generation')
 
 const userRegister = async (req, res) => {
-    let { name, email, password } = body.req
 
-    const isExist = await userModel.findOne({
-        email
-    })
+    try {
+        const { name, email, password } = req.body
 
-    if (isExist) return res.status(200).json({
-        message: "User Already Exist"
-    })
+        const isExist = await userModel.findOne({
+            email
+        })
 
-    if (password.length < 6) res.status(200).json({
-        message: "Password Too Weak"
-    })
+        if (isExist) return res.status(200).json({
+            message: "User Already Exist"
+        })
 
-    bcrypt.genSalt(10, (err, salt) => {
-        bcrypt.hash(password, salt, async (err, hash)=>{
-            try {
-                const userCreated= await userModel.create({
-                    name:name,
-                    email:email,
-                    password:hash
-                })
-            } catch (error) {
-                console.log(err,"  error on generation in salt "  ,error," error in hashing ");
+        if (password.length < 6) return res.status(200).json({
+            message: "Password Too Weak"
+        })
+
+        // bcrypt.genSalt(10, (err, salt) => {
+        //     bcrypt.hash(password, salt, async (err, hash) => {
+        //         try {
+        //             const userCreated = await userModel.create({
+        //                 name: name,
+        //                 email: email,
+        //                 password: hash
+        //             })
+        //         } catch (error) {
+        //             console.log(err, "  error on generation in salt ", error, " error in hashing ");
+        //         }
+        //     })
+        // })
+
+        const salt = await bcrypt.genSalt(10)
+        const hash = await bcrypt.hash(password, salt)
+
+        const userCreated = await userModel.create({
+            name: name,
+            email: email,
+            password: hash
+        })
+
+        const token = generateToken(userCreated._id)
+
+        res.cookie("token", token)
+
+        res.status(200).json({
+            message: "User Created",
+            user: {
+                userID: userCreated._id,
+                userName: userCreated.name,
+                userEmail: userCreated.email,
+                userPassword: userCreated.password
             }
         })
-    })
 
-    const token= jwt.sign({
-        
-    })
+    } catch (error) {
+        console.log("error ===>>> ", error);
+        res.status(500).json({
+            message: "Error While creating",
+            error: error
+        })
+    }
+
+
+}
+
+module.exports={
+    userRegister
 }
