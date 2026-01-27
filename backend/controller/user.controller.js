@@ -3,6 +3,7 @@ const cookieparser = require('cookieparser')
 const bcrypt = require('bcryptjs')
 const userModel = require('../model/user.model')
 const generateToken = require('../utils/token.generation')
+const comparePassword = require('../utils/compare')
 
 const userRegister = async (req, res) => {
 
@@ -69,6 +70,45 @@ const userRegister = async (req, res) => {
 
 }
 
+const userLogin= async (req,res) => {
+    try {
+        const {email,password} =req.body
+        
+        const user = await userModel.findOne({
+            email
+        })
+        if(!user) return res.status(400).json({
+            message:"No User Found"
+        })
+
+        const isCorrectPassword=comparePassword(user,password) ;
+
+        if(!isCorrectPassword) return res.status(200).json({
+            message:"User Password Is Wrong"
+        })
+
+        const token = generateToken(user._id)
+
+        res.status(200).json({
+            message:"User Logged In",
+            token,
+            user:{
+                userID:user._id,
+                userName:user.name,
+                userEmail:user.email,
+                userPassword:user.password
+            }
+        })
+
+    } catch (error) {
+        console.log("system found an error while logging you in ==> ",error)
+        res.status(400).json({
+            message:"error occured"
+        })
+    }
+}
+
 module.exports={
-    userRegister
+    userRegister,
+    userLogin
 }
