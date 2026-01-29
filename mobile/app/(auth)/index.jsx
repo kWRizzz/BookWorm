@@ -1,9 +1,11 @@
 import {
   View,
   Text,
-  TextInput
+  TextInput,
+  TouchableOpacity
 
 } from 'react-native'
+import { Link } from "expo-router";
 import React from 'react'
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -38,7 +40,9 @@ export default function Login() {
 
         {/* input field */}
 
-        <View>
+        <View
+          className='mt-[5rem]'
+        >
 
           {/* FullName */}
 
@@ -143,6 +147,44 @@ export default function Login() {
 
         </View>
 
+        {/* Submit Button */}
+
+        <View
+          className=' flex justify-center items-center mt-5'
+        >
+          <TouchableOpacity
+            className=' flex justify-center items-center bg-green-700 h-9 w-[5rem] rounded-lg'
+          >
+            <Text>
+                Submit
+            </Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* link For SignIn */}
+
+        <View
+          className='mt-5 flex justify-center items-center'
+        >
+          <View
+            className=' flex flex-row'
+          >
+              <Text
+                className=' text-sm'
+              >
+                  Already Have An Account?   
+              </Text>
+              <Link 
+              href="/(auth)/signup"
+            >
+              <Text
+                className=' text-sm font-semibold text-green-500'
+              >
+                    signup
+              </Text>
+            </Link>   
+          </View>
+        </View>
 
       </View>
     </View>
