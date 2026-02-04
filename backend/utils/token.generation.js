@@ -1,7 +1,8 @@
 const jwt=require('jsonwebtoken')
 
-const generateToken= async (userID)=>{
-    return jwt.sign({userID},process.env.SECRET)
+const generateToken=  (userID)=>{
+    const token= jwt.sign({userID},process.env.SECRET)
+    return token
 }
 
 

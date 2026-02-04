@@ -47,10 +47,15 @@ const userRegister = async (req, res) => {
 
         const token = generateToken(userCreated._id)
 
-        res.cookie("token", token)
+        res.cookie("token", token, {
+            httpOnly: true,
+            secure: false,  
+            sameSite: 'lax'
+        })
 
         res.status(200).json({
             message: "User Created",
+            token,
             user: {
                 userID: userCreated._id,
                 userName: userCreated.name,
@@ -67,48 +72,57 @@ const userRegister = async (req, res) => {
         })
     }
 
-
 }
 
-const userLogin= async (req,res) => {
+const userLogin = async (req, res) => {
     try {
-        const {email,password} =req.body
-        
+        const { email, password } = req.body
+
         const user = await userModel.findOne({
             email
         })
-        if(!user) return res.status(400).json({
-            message:"No User Found"
+        if (!user) return res.status(400).json({
+            message: "No User Found"
         })
 
-        const isCorrectPassword=comparePassword(user,password) ;
+        const isCorrectPassword = comparePassword(user, password);
 
-        if(!isCorrectPassword) return res.status(200).json({
-            message:"User Password Is Wrong"
+        if (!isCorrectPassword) return res.status(200).json({
+            message: "User Password Is Wrong"
         })
 
         const token = generateToken(user._id)
 
         res.status(200).json({
-            message:"User Logged In",
+            message: "User Logged In",
             token,
-            user:{
-                userID:user._id,
-                userName:user.name,
-                userEmail:user.email,
-                userPassword:user.password
+            user: {
+                userID: user._id,
+                userName: user.name,
+                userEmail: user.email,
+                userPassword: user.password
             }
         })
 
     } catch (error) {
-        console.log("system found an error while logging you in ==> ",error)
+        console.log("system found an error while logging you in ==> ", error)
         res.status(400).json({
-            message:"error occured"
+            message: "error occured"
         })
     }
 }
 
-module.exports={
+const userDelete = async (req, res) => {
+    try {
+
+        res.cookie()
+
+    } catch (error) {
+        console.log("Error WHile " + error)
+    }
+}
+
+module.exports = {
     userRegister,
     userLogin
 }

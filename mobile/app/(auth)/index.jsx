@@ -9,9 +9,25 @@ import { Link } from "expo-router";
 import React from 'react'
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import { useState } from 'react';
+import { useAuthStore } from '../store/authStore';
+import { Alert } from 'react-native';
 
 
 export default function Login() {
+
+  const [userName, setUserName] = useState("")
+  const [userEmail, setUserEmail] = useState("")
+  const [userPassword, setUserPassword] = useState("")
+  const { user, isLoading,register } = useAuthStore()
+
+  const handleSignUp = async () => {
+
+    const result = await register(userName,userEmail,userPassword)
+  
+    if(!result.success) Alert.alert("Error",result.error)
+  }
+
   return (
     <View
       className=" flex-1 justify-center items-center bg-green-100"
@@ -65,8 +81,11 @@ export default function Login() {
               >
                 <AntDesign name="user" color="" size={24} />
               </View>
+
               <View>
                 <TextInput
+                  value={userName}
+                  onChangeText={setUserName}
                   className=' font-semibold'
                   placeholder='Enter Your Name'
                   autoCapitalize='none'
@@ -100,6 +119,8 @@ export default function Login() {
               </View>
               <View>
                 <TextInput
+                  value={userEmail}
+                  onChangeText={setUserEmail}
                   className=' font-semibold'
                   placeholder='Enter Your Email'
                   keyboardType='email-address'
@@ -134,6 +155,8 @@ export default function Login() {
               </View>
               <View>
                 <TextInput
+                  value={userPassword}
+                  onChangeText={setUserPassword}
                   className=' font-semibold'
                   placeholder='Enter Your Password'
                   autoCapitalize='none'
@@ -153,10 +176,11 @@ export default function Login() {
           className=' flex justify-center items-center mt-5'
         >
           <TouchableOpacity
+            onPress={handleSignUp}
             className=' flex justify-center items-center bg-green-700 h-9 w-[5rem] rounded-lg'
           >
             <Text>
-                Submit
+              Submit
             </Text>
           </TouchableOpacity>
         </View>
@@ -169,20 +193,20 @@ export default function Login() {
           <View
             className=' flex flex-row'
           >
-              <Text
-                className=' text-sm'
-              >
-                  Already Have An Account?   
-              </Text>
-              <Link 
+            <Text
+              className=' text-sm'
+            >
+              Already Have An Account?
+            </Text>
+            <Link
               href="/(auth)/signup"
             >
               <Text
                 className=' text-sm font-semibold text-green-500'
               >
-                    signup
+                signup
               </Text>
-            </Link>   
+            </Link>
           </View>
         </View>
 
