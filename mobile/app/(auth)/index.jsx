@@ -27,7 +27,7 @@ export default function Login() {
   
     if(!result.success) Alert.alert("Error",result.error)
   }
-
+  
   return (
     <View
       className=" flex-1 justify-center items-center bg-green-100"

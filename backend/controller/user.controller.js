@@ -8,7 +8,7 @@ const comparePassword = require('../utils/compare')
 const userRegister = async (req, res) => {
 
     try {
-        const { name, email, password } = req.body
+        const { name, email, password,profileImage } = req.body
 
         const isExist = await userModel.findOne({
             email
@@ -38,11 +38,13 @@ const userRegister = async (req, res) => {
 
         const salt = await bcrypt.genSalt(10)
         const hash = await bcrypt.hash(password, salt)
-
+        const image = `https://api.dicebear.com/7.x/avataaars/svg?seed=${name}`;
         const userCreated = await userModel.create({
             name: name,
             email: email,
-            password: hash
+            password: hash,
+            profileImage:image
+
         })
 
         const token = generateToken(userCreated._id)
