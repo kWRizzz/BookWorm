@@ -38,6 +38,31 @@ const creartePost= async (req,res) => {
     }
 }
 
+// dummy api from frontend 
+// const response= await fetch("https://localhost:3000/api/book/page=1&limit=5")
+
+const sendPost= async (req,res)=>{
+    try {
+        const page= req.query.page || 1;
+        const limit=req.query.limit || 5;
+        const skip= (page-1)*limit
+
+        const book = await bookModel.find().sort({createdAt:-1}).skip(skip).limit(limit).populate("user","name profileImage");
+
+
+        res.send(book)
+
+
+    } catch (error) {
+        console.log(`error occured ${error}`)
+        res.status(400).json({
+            message:error.message,
+            success:false
+        })
+    }
+}
+
 module.exports={
-    creartePost
+    creartePost,
+    sendPost
 }

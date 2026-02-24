@@ -4,3 +4,7 @@ const bookController=require("../controller/book.controller")
 const router = express.Router()
 
 router.post('/',protectRoute,bookController.creartePost )
+
+router.get('/',bookController.sendPost)
+
+module.exports=router
